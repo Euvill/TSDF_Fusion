@@ -21,8 +21,17 @@ public:
                    const Eigen::Matrix4f &cam_pose, 
                    const float obs_weight);
 
-private:
     const int color_const_ = 256 * 256;
+
+    std::vector<std::vector<float>> vox_coords_;
+
+    std::vector<std::vector<std::vector<float>>> tsdf_vol_;
+    std::vector<std::vector<std::vector<float>>> weight_vol_;
+    std::vector<std::vector<std::vector<float>>> color_vol_;
+
+    long voxel_num_;
+
+private:
 
     Eigen::Matrix<float, 3, 2> vol_bnds_;
     float voxel_size_;
@@ -32,14 +41,9 @@ private:
     Eigen::Vector3f vol_origin_;
 
     std::vector<Eigen::Vector3f> cam_pts_;
-    std::vector<std::vector<float>> vox_coords_;
-
-    std::vector<std::vector<std::vector<float>>> tsdf_vol_;
-    std::vector<std::vector<std::vector<float>>> weight_vol_;
-    std::vector<std::vector<std::vector<float>>> color_vol_;
 
     void flat_color_image(const cv::Mat &src_image, cv::Mat &dst_image);
-    void init_3d_tensor(std::vector<std::vector<std::vector<float>>> &volume, const Eigen::Vector3i &dim);
+    void init_3d_tensor(std::vector<std::vector<std::vector<float>>> &volume, const Eigen::Vector3i &dim, float num);
     void init_2d_array(std::vector<std::vector<float>> &volume, const Eigen::Vector2i &dim);
     void vox2world(const Eigen::Vector3f &vol_origin,
                    const float &voxel_size,

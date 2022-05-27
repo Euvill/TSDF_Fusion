@@ -56,11 +56,11 @@ std::vector<Eigen::Vector4f> get_view_frustum(cv::Mat& depth_im,
     return pts_frust_vec;
 }
 
-void TSDFVolume::init_3d_tensor(std::vector<std::vector<std::vector<float>>>& volume, const Eigen::Vector3i& dim) {
+void TSDFVolume::init_3d_tensor(std::vector<std::vector<std::vector<float>>>& volume, const Eigen::Vector3i& dim, float num) {
 
     std::vector<std::vector<std::vector<float>>> vec(dim(0), std::vector<std::vector<float>>(
                                                      dim(1), std::vector<float>(
-                                                     dim(2), 0.0)));
+                                                     dim(2), num)));
     volume = vec;
 }
 
@@ -130,20 +130,20 @@ TSDFVolume::TSDFVolume(const Eigen::Matrix<float, 3, 2> &vol_bnds, float voxel_s
     vol_bnds_.block<3, 1>(0, 1) = vol_bnds_.block<3, 1>(0, 0) + vol_dim_.cast<float>() * voxel_size_;
     vol_origin_ = vol_bnds_.block<3, 1>(0, 0);
 
-    long voxel_num = vol_dim_(0) * vol_dim_(1) * vol_dim_(2);
+    voxel_num_ = vol_dim_(0) * vol_dim_(1) * vol_dim_(2);
 
     std::cout << "Voxel volume size: " 
               << vol_dim_(0) << " x "  // x-coordinate
               << vol_dim_(1) << " x "  // y-coordinate
               << vol_dim_(2) << " - "  // z-coordinate
               << "# points: " 
-              << voxel_num << std::endl;
+              << voxel_num_ << std::endl;
 
-    init_3d_tensor(tsdf_vol_,   vol_dim_);
-    init_3d_tensor(weight_vol_, vol_dim_);
-    init_3d_tensor(color_vol_,  vol_dim_);
+    init_3d_tensor(tsdf_vol_,   vol_dim_, 1.0);
+    init_3d_tensor(weight_vol_, vol_dim_, 0.0);
+    init_3d_tensor(color_vol_,  vol_dim_, 0.0);
 
-    init_2d_array(vox_coords_, Eigen::Vector2i(voxel_num, 3));
+    init_2d_array(vox_coords_, Eigen::Vector2i(voxel_num_, 3));
 
     long index = 0;
     for (int i = 0; i < vol_dim_(0); ++i) {
@@ -157,7 +157,7 @@ TSDFVolume::TSDFVolume(const Eigen::Matrix<float, 3, 2> &vol_bnds, float voxel_s
         }
     }
 
-    std::vector<Eigen::Vector3f> vec(voxel_num);
+    std::vector<Eigen::Vector3f> vec(voxel_num_);
     cam_pts_ = vec;
 
     vox2world(vol_origin_, voxel_size_, vol_dim_, cam_pts_);
@@ -247,11 +247,4 @@ bool TSDFVolume::integrate(const cv::Mat& color_image,
 
     return true;
 }
-
-bool TSDFVolume::saveFile(void) {
-
-
-
-}
-
 
