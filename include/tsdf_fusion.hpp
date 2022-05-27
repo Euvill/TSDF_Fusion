@@ -6,9 +6,14 @@
 #include <Eigen/Dense> 
 #include <opencv2/opencv.hpp>
 
+// Get corners of 3D camera view frustum of depth image
 std::vector<Eigen::Vector4f> get_view_frustum(cv::Mat& depth_im,
                                               const Eigen::Matrix3f& cam_intr, 
                                               const Eigen::Matrix4f& cam_pose);
+
+// Compute camera view frustum and extend convex hull
+void find_bounds(const std::vector<Eigen::Vector4f> &view_frust_pts,
+                 Eigen::Matrix<float, 3, 2> &vol_bnds);
 
 class TSDFVolume {
 

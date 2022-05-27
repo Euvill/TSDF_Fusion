@@ -70,21 +70,6 @@ std::string to_seq_index(int num) {
     return str;
 }
 
-void find_bounds(const std::vector<Eigen::Vector4f>& view_frust_pts, 
-                 Eigen::Matrix<float, 3, 2>& vol_bnds) {
-                
-    for (int i = 0; i < view_frust_pts.size(); ++i) {
-        vol_bnds(0, 0) = vol_bnds(0, 0) < view_frust_pts[i](0) ? vol_bnds(0, 0) : view_frust_pts[i](0);
-        vol_bnds(0, 1) = vol_bnds(0, 1) > view_frust_pts[i](0) ? vol_bnds(0, 1) : view_frust_pts[i](0);
-
-        vol_bnds(1, 0) = vol_bnds(1, 0) < view_frust_pts[i](1) ? vol_bnds(1, 0) : view_frust_pts[i](1);
-        vol_bnds(1, 1) = vol_bnds(1, 1) > view_frust_pts[i](1) ? vol_bnds(1, 1) : view_frust_pts[i](1);
-
-        vol_bnds(2, 0) = vol_bnds(2, 0) < view_frust_pts[i](2) ? vol_bnds(2, 0) : view_frust_pts[i](2);
-        vol_bnds(2, 1) = vol_bnds(2, 1) > view_frust_pts[i](2) ? vol_bnds(2, 1) : view_frust_pts[i](2);
-    }
-}
-
 int main(int argc, char** argv) {
 
     int N_imgs = 1000;

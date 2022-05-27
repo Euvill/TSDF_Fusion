@@ -56,6 +56,21 @@ std::vector<Eigen::Vector4f> get_view_frustum(cv::Mat& depth_im,
     return pts_frust_vec;
 }
 
+void find_bounds(const std::vector<Eigen::Vector4f>& view_frust_pts, 
+                                   Eigen::Matrix<float, 3, 2>& vol_bnds) {
+                
+    for (int i = 0; i < view_frust_pts.size(); ++i) {
+        vol_bnds(0, 0) = vol_bnds(0, 0) < view_frust_pts[i](0) ? vol_bnds(0, 0) : view_frust_pts[i](0);
+        vol_bnds(0, 1) = vol_bnds(0, 1) > view_frust_pts[i](0) ? vol_bnds(0, 1) : view_frust_pts[i](0);
+
+        vol_bnds(1, 0) = vol_bnds(1, 0) < view_frust_pts[i](1) ? vol_bnds(1, 0) : view_frust_pts[i](1);
+        vol_bnds(1, 1) = vol_bnds(1, 1) > view_frust_pts[i](1) ? vol_bnds(1, 1) : view_frust_pts[i](1);
+
+        vol_bnds(2, 0) = vol_bnds(2, 0) < view_frust_pts[i](2) ? vol_bnds(2, 0) : view_frust_pts[i](2);
+        vol_bnds(2, 1) = vol_bnds(2, 1) > view_frust_pts[i](2) ? vol_bnds(2, 1) : view_frust_pts[i](2);
+    }
+}
+
 void TSDFVolume::init_3d_tensor(std::vector<std::vector<std::vector<float>>>& volume, const Eigen::Vector3i& dim, float num) {
 
     std::vector<std::vector<std::vector<float>>> vec(dim(0), std::vector<std::vector<float>>(
